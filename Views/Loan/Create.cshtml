@@ -1,0 +1,76 @@
+@{
+    ViewData["Title"] = "Registrar Préstamo";
+    bool isAdmin = ViewBag.IsAdmin;
+    var books = ViewBag.Books as List<AdminLibrary.Models.Book> ?? new();
+    var users = ViewBag.Users as List<AdminLibrary.Models.User> ?? new();
+}
+
+<div class="page-header">
+    <h3 class="fw-bold mb-0">📚 Registrar Préstamo</h3>
+</div>
+
+@if (!books.Any())
+{
+    <div class="alert alert-info">No hay libros disponibles para prestar.</div>
+    <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @if (isAdmin)
+                        {
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">👤 Usuario</label>
+                                <select name="selectedUserId" class="form-select">
+                                    @foreach (var u in users)
+                                    {
+                                        <option value="@u.id">@u.Username (@u.Email)</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">📖 Libro</label>
+                            <select name="bookId" class="form-select form-select-lg">
+                                @foreach (var book in books)
+                                {
+                                    <option value="@book.Id">@book.Title — @book.Author (Stock: @book.Stock)</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">📖 Registrar Préstamo</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white fw-semibold">ℹ️ Disponibles (@books.Count)</div>
+                <ul class="list-group list-group-flush" style="max-height:320px; overflow-y:auto;">
+                    @foreach (var book in books)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="fw-semibold">@book.Title</div>
+                                <small class="text-muted">@book.Author · @book.Genre</small>
+                            </div>
+                            <span class="badge bg-success">@book.Stock</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+}

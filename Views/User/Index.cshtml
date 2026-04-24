@@ -1,0 +1,50 @@
+@model List<AdminLibrary.Models.User>
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="d-flex justify-content-between align-items-center page-header">
+    <h3 class="fw-bold mb-0">👥 Gestión de Usuarios</h3>
+    <a asp-action="Create" class="btn btn-primary">➕ Nuevo Usuario</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th class="text-center">Rol</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td class="text-muted small">@user.id</td>
+                            <td class="fw-semibold">@user.Username</td>
+                            <td class="text-muted">@user.Email</td>
+                            <td class="text-center">
+                                <span class="badge @(user.Role == "Admin" ? "bg-danger" : "bg-secondary")">
+                                    @(user.Role == "Admin" ? "🔑 Admin" : "👤 Usuario")
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Edit" asp-route-id="@user.id" class="btn btn-sm btn-outline-primary">✏️ Editar</a>
+                                <form asp-action="Delete" asp-route-id="@user.id" method="post" class="d-inline"
+                                      onsubmit="return confirm('¿Eliminar al usuario @user.Username?')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">🗑️ Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+@model List<AdminLibrary.Models.Loan>
+
+@{
+    ViewData["Title"] = "Mis Préstamos";
+}
+
+<div class="d-flex justify-content-between align-items-center page-header">
+    <h3 class="fw-bold mb-0">📋 Mis Préstamos</h3>
+
+    <a asp-action="Create" asp-controller="Loan" class="btn btn-primary">
+        ➕ Solicitar Préstamo
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5 text-muted">
+        <div style="font-size:4rem">📭</div>
+        <h5 class="mt-3">No tienes préstamos activos</h5>
+
+        <a asp-action="Create" class="btn btn-primary mt-2">
+            Solicitar un libro
+        </a>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body p-0">
+
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Libro</th>
+                        <th>Autor</th>
+                        <th>Fecha de Préstamo</th>
+                        <th class="text-center">Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var loan in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@loan.Book.Title</td>
+                            <td class="text-muted">@loan.Book.Author</td>
+                            <td>@loan.LoanDate.ToString("dd/MM/yyyy HH:mm")</td>
+
+                            <td class="text-center">
+
+                                <form asp-action="Return"
+                                      asp-controller="Loan"
+                                      asp-route-id="@loan.Id"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('¿Devolver este libro?');">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-warning">
+                                        ↩️ Devolver
+                                    </button>
+
+                                </form>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+}

@@ -1,0 +1,47 @@
+@model AdminLibrary.Models.Book
+@{
+    ViewData["Title"] = "Editar Libro";
+}
+
+<div class="page-header">
+    <h3 class="fw-bold mb-0">✏️ Editar Libro</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Edit" asp-controller="Book" method="post">
+                    <input asp-for="Id" type="hidden" />
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-semibold">Título</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Author" class="form-label fw-semibold">Autor</label>
+                        <input asp-for="Author" class="form-control" />
+                        <span asp-validation-for="Author" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Genre" class="form-label fw-semibold">Género</label>
+                        <input asp-for="Genre" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Stock" class="form-label fw-semibold">Stock disponible</label>
+                        <input asp-for="Stock" type="number" class="form-control" min="0" />
+                        <span asp-validation-for="Stock" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-semibold">Descripción</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">💾 Guardar cambios</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

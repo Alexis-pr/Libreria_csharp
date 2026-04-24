@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Librería</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AdminLibrary.styles.css" asp-append-version="true" />
+    <style>
+        body { background-color: #f8f9fa; }
+        .sidebar { min-height: calc(100vh - 56px); background: #212529; width: 220px; min-width: 220px; }
+        .sidebar .nav-link { color: #adb5bd; padding: .6rem 1.2rem; border-radius: 6px; transition: all .15s; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: #0d6efd; }
+        .sidebar .section-label { color: #6c757d; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; padding: .5rem 1.2rem; margin-top: .5rem; }
+        .main-content { padding: 2rem; flex: 1; }
+        .card { border: none; box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+        .table thead th { background: #212529; color: #fff; border: none; }
+        .page-header { margin-bottom: 1.5rem; border-bottom: 2px solid #dee2e6; padding-bottom: .75rem; }
+        footer { background: #212529; color: #adb5bd; padding: .8rem 0; }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-dark bg-dark px-3" style="height:56px;">
+    <span class="navbar-brand fw-bold">📚 AdminLibrary</span>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="d-flex align-items-center gap-3">
+            @if (User.IsInRole("Admin"))
+            {
+                <span class="badge bg-danger">🔑 Admin</span>
+            }
+            <span class="text-light small">@User.Identity.Name</span>
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
+            </form>
+        </div>
+    }
+</nav>
+
+<div class="d-flex flex-grow-1">
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="sidebar d-flex flex-column p-2">
+            <nav class="nav flex-column gap-1 mt-2">
+                <div class="section-label">Catálogo</div>
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Book" ? "active" : "")"
+                   asp-controller="Book" asp-action="Index">📖 Libros</a>
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Loan" ? "active" : "")"
+                   asp-controller="Loan" asp-action="Index">📋 Préstamos</a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="section-label">Administración</div>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")"
+                       asp-controller="User" asp-action="Index">👥 Usuarios</a>
+                }
+            </nav>
+        </div>
+    }
+
+    <div class="main-content">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ✅ @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ❌ @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        <main role="main">@RenderBody()</main>
+    </div>
+</div>
+
+<footer>
+    <div class="container text-center">
+        <small>&copy; 2026 AdminLibrary — Sistema de Gestión de Librería</small>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
